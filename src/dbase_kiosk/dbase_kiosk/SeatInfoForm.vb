@@ -1,4 +1,9 @@
-﻿Public Class SeatInfoForm
+﻿Imports MySql.Data.MySqlClient
+
+Public Class SeatInfoForm
+    Public sche_id As Integer = -1
+    Public screen_id As Integer = -1
+
     Public availableSeat As Integer = 5
     Dim currentseat As Integer = 0
 
@@ -11,6 +16,107 @@
     Private Sub Common_Load(sender As Object, e As EventArgs) Handles Me.Load
         Opacity = 0
 
+        DB_OPEN(0)
+        DB_OPEN(1)
+
+        Dim cmd As New MySqlCommand("", BP_CON(0))
+
+        cmd.CommandText = "SELECT
+    movie_id,
+    sche_id,
+    a.screen_id,
+    screen_type,
+    screen_name,
+    NAME,
+    name_eng,
+    rating,
+    poster,
+    start_time,
+    end_time
+FROM
+    (
+    SELECT
+        *,
+        DATE_ADD(
+            start_time,
+            INTERVAL movie_time MINUTE
+        ) AS end_time
+    FROM schedule
+NATURAL JOIN
+    movie
+WHERE
+    sche_id = ?sid
+LIMIT 20) a
+JOIN
+    screen
+ON
+    a.screen_id = screen.screen_id"
+        cmd.Parameters.AddWithValue("?sid", sche_id)
+
+        Using RS As MySqlDataReader = cmd.ExecuteReader()
+
+            If RS.Read() = False Then
+                MsgBox("편성 데이터가 존재하지 않습니다.", vbExclamation)
+            Else
+
+                Do
+
+                    Dim movieCtrl As New MovieSelectionCtrl
+
+                    movieCtrl.Dock = DockStyle.Fill
+
+                    Dim totalseat As Integer = 0
+                    Dim leftseat As Integer = 0
+
+                    Dim cmd2 As New MySqlCommand("SELECT COUNT(*) as totalseat FROM screen_seat WHERE screen_id = ?sid AND available = 1", BP_CON(1))
+                    cmd2.Parameters.AddWithValue("?sid", RS("screen_id"))
+
+                    Using RS2 As MySqlDataReader = cmd2.ExecuteReader()
+
+                        If Not RS2.Read() = False Then
+                            totalseat = RS2("totalseat")
+                        End If
+
+                    End Using
+
+                    cmd2.CommandText = "SELECT count(*) AS occupied FROM booking WHERE sche_id = ?sche_id"
+                    cmd2.Parameters.AddWithValue("?sche_id", RS("sche_id"))
+
+                    Using RS2 As MySqlDataReader = cmd2.ExecuteReader()
+
+                        If Not RS2.Read() = False Then
+                            leftseat = totalseat - RS2("occupied")
+                        End If
+
+                    End Using
+
+                    With movieCtrl
+                        .movie_title_label.Text = RS("name").ToString
+                        .movie_engname_label.Text = RS("name_eng").ToString
+                        .starttime_label.Text = Convert.ToDateTime(RS("start_time")).ToString("HH:mm")
+                        .endtime_label.Text = Convert.ToDateTime(RS("end_time")).ToString("HH:mm")
+                        .screen_name_label.Text = RS("screen_name")
+                        .screen_type_label.Text = RS("screen_type")
+                        .PosterPB.Load(RS("poster").ToString)
+                        .seat_count_label.Text = leftseat.ToString + "석 남음 (" + totalseat.ToString + "석)"
+                        .SeatSelectButton.Visible = False
+                    End With
+
+                    SelectedSchePanel.Controls.Add(movieCtrl)
+
+                    availableSeat = leftseat
+                    screen_id = RS("screen_id")
+
+                Loop Until RS.Read() = False
+
+                DB_CLOSE(1)
+
+            End If
+
+            cmd.Parameters.Clear()
+
+        End Using
+
         SubLabel1.Text = "관람 인원수" + vbCrLf + "(" + availableSeat.ToString + "명 가능)"
         BtnCheck()
     End Sub
@@ -21,7 +127,7 @@
     End Sub
 
     Private Sub FadeOutEffect(sender As Object, e As EventArgs) Handles MyBase.Closing
-        FadeOut(Me)
+        If Not MainForm.ForceClose Then FadeOut(Me)
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
@@ -33,6 +139,8 @@
         SeatSelectionForm.SetDesktopLocation(MainForm.Location.X + MainForm.MainPanel.Location.X,
                                             MainForm.Location.Y + MainForm.MainPanel.Location.Y)
         SeatSelectionForm.seatcount = currentseat
+        SeatSelectionForm.screenId = screen_id
+        SeatSelectionForm.sche_id = sche_id
         SeatSelectionForm.Show()
     End Sub
 

@@ -1,9 +1,14 @@
-﻿Public Class SeatSelectionForm
-    Dim existingSeats As New List(Of String)
-    Dim availableSeats As New List(Of String)
-    Dim selectedSeats As New List(Of String)
+﻿Imports MySql.Data.MySqlClient
 
-    Public seatcount = 3
+Public Class SeatSelectionForm
+    Public selectedSeats As New List(Of String)
+
+    Public screenId As Integer = -1
+    Public sche_id As Integer = -1
+
+    Dim avail_color As Color = Color.FromArgb(50, 50, 50)
+
+    Public seatcount = -1
     Dim currentSeatCount = 0
 
     Private Sub FadeInEffect(sender As Object, e As EventArgs) Handles MyBase.Shown
@@ -12,36 +17,18 @@
     End Sub
 
     Private Sub FadeOutEffect(sender As Object, e As EventArgs) Handles MyBase.Closing
-        FadeOut(Me)
+        If Not MainForm.ForceClose Then FadeOut(Me)
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         Close()
     End Sub
 
-    Sub SetDemoSeats()
-        Dim str1 = "A1;A2;A3;A4;A5;A6;A7;A8;A9;A10;A11;A12;A13;A14;A15;"
-        str1 += "B1;B2;B3;B4;B5;B6;B7;B8;B9;B10;B11;B12;B13;B14;B15;"
-        str1 += "C1;C2;C3;C4;C5;C6;C7;C8;C9;C10;C11;C12;C13;C14;C15;"
-        str1 += "D1;D2;D3;D4;D5;D6;D7;D8;D9;D10;D11;D12;D13;D14;D15;"
-        str1 += "E1;E2;E3;E4;E6;E7;E8;E9;E10;E12;E13;E14;E15"
-
-        existingSeats = str1.Split(";").ToList
-
-        str1 = "A6;A7;A8;A9;A10;A11;A12;A13;"
-        str1 += "B4;B5;B6;B7;B10;B11;B12;B13;"
-        str1 += "C7;C8;C9;C10;C11C14;"
-        str1 += "D1;D8;D9;D10;D15;"
-        str1 += "E1;E2;E3;E12;E13;"
-
-        availableSeats = str1.Split(";").ToList
-    End Sub
-
     '좌석 클릭시 이벤트
     Private Sub SeatBt_Click(sender As Object, e As EventArgs)
         If selectedSeats.Contains(sender.name) Then
             selectedSeats.Remove(sender.name)
-            sender.BackColor = Color.FromArgb(90, 90, 90)
+            sender.BackColor = avail_color
             If currentSeatCount > 0 Then
                 currentSeatCount -= 1
             End If
@@ -63,90 +50,122 @@
         'MsgBox("clicked: " + sender.name)
     End Sub
 
-
-    Private Sub SeatSelectionForm_Load(sender As Object, e As EventArgs) Handles Me.Load
-
-        SetDemoSeats()
-
+    Sub CheckSeats()
 
         Dim g As Graphics = CreateGraphics()
         Dim dpi = g.DpiX
         Dim current = dpi / 96
 
-        Opacity = 0
+        Dim row As New List(Of String)
+        Dim col As New List(Of Integer)
+        Dim status As New List(Of Boolean)
+        Dim sid As New List(Of Integer)
 
-        SeatGridPanel.Controls.Clear()
+        ' 테이블 완전 비우기
+        scr_seat_table.Controls.Clear()
+        scr_seat_table.RowStyles.Clear()
+        scr_seat_table.ColumnStyles.Clear()
 
-        For ynum = 1 To 10
+        DB_OPEN(0)
 
-            For xnum = 1 To 15
+        ' 좌석 조회 쿼리 실행
+        Dim cmd As New MySqlCommand("SELECT * FROM screen_seat WHERE screen_id = ?sid ORDER BY seat_row, seat_col", BP_CON(0))
+        cmd.Parameters.AddWithValue("?sid", screenId)
 
-                Dim btname As String
+        Using RS As MySqlDataReader = cmd.ExecuteReader()
 
-                Select Case ynum
-                    Case 1
-                        btname = "A"
-                    Case 2
-                        btname = "B"
-                    Case 3
-                        btname = "C"
-                    Case 4
-                        btname = "D"
-                    Case 5
-                        btname = "E"
-                    Case 6
-                        btname = "F"
-                    Case 7
-                        btname = "G"
-                    Case 8
-                        btname = "H"
-                    Case 9
-                        btname = "I"
-                    Case 10
-                        btname = "J"
-                    Case Else
-                        btname = "?"
-                End Select
+            If RS.Read() = False Then
+                MsgBox("좌석 데이터가 존재하지 않습니다.", vbExclamation)
+            Else
+                Do
+                    row.Add(RS("seat_row").ToString)
+                    col.Add(Convert.ToInt32(RS("seat_col")))
+                    status.Add(RS("available"))
+                    sid.Add(Convert.ToInt32(RS("seat_id")))
+                Loop Until RS.Read = False
 
-                btname += xnum.ToString
+            End If
 
-                Dim seatBt As New Button
+            Dim row_size As Integer = Asc(row.Max) - Asc(row.Min) + 1
+            Dim col_size As Integer = col.Max - col.Min + 1
 
-                seatBt.Name = btname
-                seatBt.Text = btname
-                seatBt.Dock = DockStyle.Fill
-                seatBt.FlatStyle = FlatStyle.Flat
-                seatBt.FlatAppearance.BorderSize = 0
-                seatBt.ForeColor = Color.White
-                seatBt.BackColor = Color.FromArgb(39, 39, 39)
-                seatBt.Font = New Font("Roboto Condensed", 13 * current)
-
-                '존재하는 자리일 경우에만 보이기
-                If (Not existingSeats.Contains(btname)) Then
-                    seatBt.Text = ""
-                    seatBt.BackColor = SeatGridPanel.BackColor
-                End If
-
-                '비지 않은 자리일 경우 활성화 -> 아니면 비활성화
-                If (availableSeats.Contains(btname)) Then
-                    seatBt.BackColor = Color.FromArgb(90, 90, 90)
-                Else
-                    seatBt.Enabled = False
-                End If
-
-                AddHandler seatBt.Click, AddressOf SeatBt_Click
-
-                SeatGridPanel.Controls.Add(seatBt)
-
+            ' 테이블 행렬 설정 및 비율설정
+            scr_seat_table.RowCount = row_size
+            For i = 1 To row_size
+                scr_seat_table.RowStyles.Add(New RowStyle(SizeType.Percent, 100 / row_size))
+            Next
+            scr_seat_table.ColumnCount = col_size
+            For i = 1 To col_size
+                scr_seat_table.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100 / col_size))
             Next
 
-        Next
+
+            For i = 0 To row.Count - 1
+
+                Dim r = Asc(row(i)) - 65
+                Dim c = col(i) - 1
+
+                Dim lb As New Button
+                lb.FlatStyle = FlatStyle.Flat
+                lb.FlatAppearance.BorderSize = 0
+                lb.ForeColor = Color.White
+                lb.Dock = DockStyle.Fill
+                lb.Font = New Font("Roboto Condensed", 13 * current)
+                lb.TextAlign = ContentAlignment.MiddleCenter
+                lb.Margin = New Padding(4)
+                lb.Text = row(i) + " " + col(i).ToString
+                lb.Name = sid(i).ToString
+
+                If status(i) Then
+                    lb.BackColor = avail_color
+                Else
+                    lb.BackColor = Color.FromArgb(34, 34, 34)
+                    lb.Enabled = False
+                    lb.Text = ""
+                End If
+
+                AddHandler lb.Click, AddressOf SeatBt_Click
+
+                scr_seat_table.Controls.Add(lb, c, r)
+            Next
+
+            ' 탐색 쿼리 종료
+        End Using
+
+
+        cmd.CommandText = "SELECT * FROM
+                           ( SELECT * FROM schedule
+                            NATURAL JOIN screen_seat
+                            WHERE
+                            sche_id = ?sche_id ) a INNER JOIN booking
+                            WHERE
+                                a.seat_id = booking.seat_id AND booking.sche_id = ?sche_id"
+        cmd.Parameters.AddWithValue("?sche_id", sche_id)
+
+        Using RS As MySqlDataReader = cmd.ExecuteReader()
+            If Not RS.Read() = False Then
+                Do
+                    Dim r = Asc(RS("seat_row")) - 65
+                    Dim c = Convert.ToInt32(RS("seat_col")) - 1
+
+                    Dim ctrl = scr_seat_table.GetControlFromPosition(c, r)
+                    ctrl.Enabled = False
+                Loop Until RS.Read = False
+            End If
+        End Using
+
+    End Sub
+
+    Private Sub SeatSelectionForm_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Opacity = 0
+        CheckSeats()
     End Sub
 
     Private Sub SubmitButton_Click(sender As Object, e As EventArgs) Handles SubmitButton.Click
-        PurchaseForm.Close()
-        PurchaseForm.SetDesktopLocation(MainForm.Location.X + MainForm.MainPanel.Location.X,
+        PhoneNumForm.Close()
+        PhoneNumForm.SetDesktopLocation(MainForm.Location.X + MainForm.MainPanel.Location.X,
                                             MainForm.Location.Y + MainForm.MainPanel.Location.Y)
-        PurchaseForm.Show()
+        PhoneNumForm.Show()
     End Sub
+
 End Class

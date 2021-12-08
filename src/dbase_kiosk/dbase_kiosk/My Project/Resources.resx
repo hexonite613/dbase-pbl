@@ -127,8 +127,8 @@
   <data name="left_mid" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\left_mid.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="minus_bt" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\minus_bt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="bottom_right" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bottom_right.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="chk_prnt_bt" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\chk_prnt_bt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -142,29 +142,29 @@
   <data name="paymethod_kakao" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\paymethod_kakao.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="paymethod_payco" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\paymethod_payco.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="paymethod_samsung" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\paymethod_samsung.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="default_bg" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\default_bg.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="buy_ticket_bt" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\buy_ticket_bt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="bottom_right" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\bottom_right.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="plus_bt" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\plus_bt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="minus_bt" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\minus_bt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="circle_frame_right'" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\circle_frame_right'.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="paymethod_samsung" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\paymethod_samsung.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="plus_bt" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\plus_bt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="paymethod_payco" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\paymethod_payco.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="noimg" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\noimg.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="buy_ticket_bt" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\buy_ticket_bt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="top_mid" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\top_mid.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -174,5 +174,8 @@
   </data>
   <data name="bottom_mid" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\bottom_mid.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="num_bt_back" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\..\..\OneDrive - 한양대학교\문서\dbase\res\num_bt_back.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

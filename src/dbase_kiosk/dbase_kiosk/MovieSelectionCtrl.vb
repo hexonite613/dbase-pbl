@@ -1,16 +1,17 @@
-﻿Imports System.Runtime.InteropServices
+﻿Imports MySql.Data.MySqlClient
 
 Public Class MovieSelectionCtrl
-    Public Shared Function ShowScrollBar(ByVal hWnd As System.IntPtr, ByVal wBar As Integer, ByVal bShow As Boolean) As Boolean
-    End Function
 
-    Private Const SB_HORZ As Integer = 0
+    Public Selected As Boolean = False
+    Public sche_id As Integer = -1
+    Public screen_id As Integer = -1
 
-    Private Sub MovieSelectionCtrl_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        ShowScrollBar(SchedulePanel.Handle, SB_HORZ, True)
+    Public totalSeat As Integer = -1
+    Public leftSeat As Integer = -1
+
+    Private Sub MovieSelectionCtrl_Load(sender As Object, e As EventArgs) Handles Me.Load
+
     End Sub
 
-    Private Sub Label3_Click(sender As Object, e As EventArgs) Handles Label3.Click
-        MsgBox(SchedulePanel.HorizontalScroll.Visible)
-    End Sub
+
 End Class
